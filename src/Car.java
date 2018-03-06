@@ -12,6 +12,7 @@ public class Car implements Runnable {
     private CountDownLatch startLatch;
     private CyclicBarrier startBarrier;
     private CountDownLatch finishLatch;
+    private CountDownLatch winnerLatch;
 
     public String getName() {
         return name;
@@ -20,12 +21,14 @@ public class Car implements Runnable {
         return speed;
     }
     public Car(Race race, int speed,
-               CountDownLatch startLatch, CyclicBarrier startBarrier, CountDownLatch finishLatch) {
+               CountDownLatch startLatch, CyclicBarrier startBarrier, CountDownLatch finishLatch,
+               CountDownLatch winnerLatch) {
         this.race = race;
         this.speed = speed;
         this.startLatch = startLatch;
         this.startBarrier = startBarrier;
         this.finishLatch = finishLatch;
+        this.winnerLatch = winnerLatch;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
@@ -44,5 +47,7 @@ public class Car implements Runnable {
             race.getStages().get(i).go(this);
         }
         finishLatch.countDown();
+        Main.winner = name;
+        winnerLatch.countDown();
     }
 }
